@@ -73,7 +73,7 @@ Funcion biseccion como tal
 def raiz_b(local2, funcion, suma, Ni = 150, tol = 1e-4):
     raiz_loop = localizador(funcion,local2[0], local2[1]) 
     raiz_real = []
-    print(raiz_loop) #///////////////////////////////////////////////// Aqui esta el problema
+    print(raiz_loop) 
     for i in raiz_loop:
         p = biseccion(i, tol, funcion, suma, Ni)
         raiz_real.append(p)
@@ -104,6 +104,36 @@ def intr_int():
     
     else:
         print("Valor erroneo")    
+#/////////////////////////////////////////////////////////////////Newton
+def Dominio(x, funcion):
+    lim = np.linspace(x[0],x[1], 100)
+    posible = []
+    for i in range(len(lim)):
+        comparar = [lim[i-1], lim[i]]
+        if sigma(funcion, comparar) < 0:
+            posible.append(lim[i])
+    return posible
 
+
+def Newton(x0,f,df, tol=1e-5):
+    operador = True
+    raiz = 0
+    while operador:
+        p = x0 - (f(x0)/df(x0))
+        if abs(x0-p) < tol:
+            #print("La raiz de su función es: ", p)
+            raiz = p
+            operador = False
+        x0 = p
+    return raiz
+
+
+def raiz_N(x0, f, df,tol = 1e-5):
+    raiz_loop = Dominio(x0,f)
+    raiz = []
+    for i in raiz_loop:
+        p = Newton(i,f,df,tol)
+        raiz.append(p)
+    return raiz
 
     
