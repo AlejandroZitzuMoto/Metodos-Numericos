@@ -1,4 +1,5 @@
-import numpy as np
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
+
 # Hacer una funcion que se encarge de encontrar las condiciones donde se encuentran nuestras raices. 
 # Tambien para cuando nuestras funciones no tengan nada que ya esten pre definidas y que esten a prueba de errores 
 # Importar la nueba libreria que creemos

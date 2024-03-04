@@ -1,7 +1,8 @@
 ## Metodo de secante 2
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
 
 ## Importar libreria
-def secante(a,b,tol,funcion,raiz):
+def secante2(a,b,tol,funcion,raiz):
     operador = True
     while operador:
         p = b-(funcion(b) * (b - a))/(funcion(b)-funcion(a))

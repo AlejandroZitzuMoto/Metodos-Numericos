@@ -1,4 +1,4 @@
-
+import numpy as np
 '''
 Verifica si es un int o flotante
 '''

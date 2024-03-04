@@ -1,4 +1,5 @@
 ## Metodo de Newton
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
 
 # Importar las funciones
 

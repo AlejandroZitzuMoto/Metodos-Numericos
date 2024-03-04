@@ -1,7 +1,8 @@
 ## Metodo secante
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
 
 ## Importar libreria de funciones
-def secante(x,f, tol= 1e-4):
+def secante1(x,f, tol= 1e-4):
     operador = True
     raiz = 0
     while operador:
@@ -14,7 +15,7 @@ def secante(x,f, tol= 1e-4):
         x[1] = p
     return raiz
 
-def raiz_secante(x0, f, tol = 1e-4): 
+def raiz_secante1(x0, f, tol = 1e-4): 
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
         w = [float(x0[i]) for i in range(2)]
         raiz_loop = localizador(f,w)

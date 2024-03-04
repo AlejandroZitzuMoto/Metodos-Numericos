@@ -1,3 +1,5 @@
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
+
 
 def punto_fijo(a, funcion1, tol = 1e-4 , Ni = 150):  
     raiz = 0
