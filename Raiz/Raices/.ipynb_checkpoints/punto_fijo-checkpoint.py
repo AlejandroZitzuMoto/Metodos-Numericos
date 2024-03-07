@@ -1,7 +1,7 @@
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 
-def punto_fijo(a, funcion1, tol = 1e-4 , Ni = 150):  
+def punto_fijo(a, f1, df=None, errores = "E_rel2", Ni=150, tol=1e-4):  
     """
     -----------------------------------------------
     Metodo del punto fijo para una raiz
@@ -9,8 +9,14 @@ def punto_fijo(a, funcion1, tol = 1e-4 , Ni = 150):
     
     Los parametros que cuenta:
     
-    intervalo: Recibe un solo parametros, usualmete uno de los extremos del intervalo [a,b].
-    f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara.
+    a: Recibe dos solo parametros, usualmete los intervalo [a,b].
+    f: La funcion g(x) lambda o el objeto def , estos refresentan la funcion que se analizara.
+    df: La derivada de g(x), obsional
+    
+    errores: Tipos de errores, E_ab (error absoluto), E_rel (error relativo), 
+    E_RPD (error diferencia de procentaje relativo), E_rel3
+    (error de diferencia y cambio relativo), E_dis (error de sitancia), E_rel2 (error relativo para convergencias cercanas a cero).
+    
     tol: la presicion a buscar, por defecto es en 1e-4.
     Ni: Numero de iteraciones, por defecto esta en 150.
     
@@ -21,24 +27,29 @@ def punto_fijo(a, funcion1, tol = 1e-4 , Ni = 150):
     
     raiz = 0
     i = 1
-    if es_flotante(a) == True:
-        while i <= Ni:
-            p = funcion1(a)
-            if abs((p - a)/a) <= tol:
-                print("La raiz de nuestra funcion es: %.5f"% p)
-                raiz = p
-                break
-            i += 1
-            a = p
-        
-        else:
-            print("El sistema no es capaz de encontrar la raiz")
-        return raiz    
+    if es_flotante(a[0]) == True and es_flotante(a[1]) == True:
+        w = [float(a[i]) for i in range(2)]
+        if f1(w[0]) > w[0] and f1(w[1]) < w[1]:
+            if derivada(df, w[0]):
+                while i <= Ni:
+                    p = f1(w[0])
+                    if error(errores)(p,w[0]) <= tol:
+                        print("La raiz de nuestra funcion es: %.5f" % p)
+                        raiz = p
+                        break
+                    i += 1
+                    w[0] = p
+                else:
+                    print("El sistema no es capaz de encontrar la raiz")
+                return raiz
+            else:
+                print("No es posible encontrar la raiz por este metodo")
     else:
-        print("Valores incorrectos")
-        
+        print("Los valores introducidos son erroneos")
 
-def raiz_fija(x0, f, tol = 1e-5, Ni = 200):
+
+
+def raiz_fija(x0, f,  g,df = None, errores = 'E_rel2', tol = 1e-5, Ni = 200):
     """
     -----------------------------------------------
     Metodo del punto fijo para una o más raices
@@ -46,9 +57,15 @@ def raiz_fija(x0, f, tol = 1e-5, Ni = 200):
     
     Los parametros que cuenta:
     
-    intervalo: Recibe dos parametros, usualmete los extremos del intervalo [a,b].
+    x0: Recibe dos parametros, usualmete los extremos del intervalo [a,b].
     f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara.
+    g: La funcion original f(x), en lambda o def.
     df: La derivada de la funcion, con lambda o def, refiriendoce a df(x)/dx.
+    
+    errores: Tipos de errores, E_ab (error absoluto), E_rel (error relativo), 
+    E_RPD (error diferencia de procentaje relativo), E_rel3
+    (error de diferencia y cambio relativo), E_dis (error de sitancia), E_rel2 (error relativo para convergencias cercanas a cero).
+    
     tol: la presicion a buscar, por defecto es en 1e-4.
     Ni: Numero de iteraciones, por defecto esta en 200.
     
@@ -59,11 +76,11 @@ def raiz_fija(x0, f, tol = 1e-5, Ni = 200):
     
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:   
         w = [float(x0[i]) for i in range(2)]
-        raiz_loop = Dominio(w, f2)
+        raiz_loop = localizador(g, w)
         raiz = []
-        print(raiz_loop)
-        for i in raiz_loop:
-                p = punto_fijo(i, f, tol, Ni)
+        for i in range(len(raiz_loop)):
+                print(f)
+                p = punto_fijo(raiz_loop[i], f, df, errores, Ni, tol)
                 raiz.append(p)
         return raiz
     else:

@@ -2,6 +2,14 @@ import numpy as np
 
 #Verifica si es un int o flotante
 
+def derivada(df, a):
+    if df is None:
+        return True
+    if abs(df(a)) < 1:
+        return True
+    else:
+        return False
+
 def es_flotante(variable):
     """
     -----------------------
@@ -156,5 +164,30 @@ def Dominio(x, funcion, Nint = 100):
         if sigma(funcion, comparar) < 0:
             posible.append(lim[i])
     return posible
+
+def error(er):    
+    """
+    -----------------------------------------
+    Entrada: Elegir un tipo de error
+    -----------------------------------------
+
+    Parametros
+    x: Reprenta el nombre del tipo, donde estan: E_ab (error absoluto), E_rel (error relativo), 
+    E_RPD (error diferencia de procentaje relativo), E_rel3
+    (error de diferencia y cambio relativo), E_dis (error de sitancia), E_rel2 (error relativo para convergencias cercanas a cero).
+    ------------------------------------------
+    Salida: Regresa un error
+    ------------------------------------------
+    """
+    
+    errores = {
+                "E_ab": lambda x, x0: abs(x-x0),
+                "E_rel": lambda x, x0: abs(x-x0)/abs(x0),
+                "E_rel2": lambda x,x0: abs(x-x0)/(1+abs(x0)),
+                "E_RPD": lambda x, x0: 2*((x-x0)/abs(x)+abs(x0)),
+                "E_rel3": lambda x, x0: abs(x-x0)/abs(max([x,x0])),
+                "E_dis": lambda x, x0: abs((x - x0/2))
+             }
+    return errores[er]
 
 

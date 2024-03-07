@@ -1,8 +1,8 @@
 ## Metodo secante
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio
+from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 ## Importar libreria de funciones
-def secante1(x,f, tol= 1e-4):
+def secante1(x,f, errores = 'E_ab', tol= 1e-4):
     """
     ---------------------------
     Metodo de la secante 1
@@ -10,8 +10,13 @@ def secante1(x,f, tol= 1e-4):
     
     Los parametros que cuenta:
     
-    intervalo: Recibe dos parametros, usualmete los extremos del intervalo [a,b] a analizar
-    f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara
+    x: Recibe dos parametros, usualmete los extremos del intervalo [a,b] a analizar.
+    f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara.
+
+    errores: Tipos de errores, E_ab (error absoluto), E_rel (error relativo), 
+    E_RPD (error diferencia de procentaje relativo), E_rel3
+    (error de diferencia y cambio relativo), E_dis (error de sitancia), E_rel2 (error relativo para convergencias cercanas a cero).
+    
     tol: la presicion a buscar, por defecto es en 1e-4
     
     ------------------------
@@ -22,19 +27,20 @@ def secante1(x,f, tol= 1e-4):
     operador = True
     raiz = 0
     if es_flotante(x[0]) == True and es_flotante(x[1]) == True:
+        w = [float(x[i]) for i in range (2)]
         while operador:
-            p = x[1]-(f(x[1]) * (x[1] - x[0]))/(f(x[1])-f(x[0]))
-            if abs(x[1]-p) < tol:
+            p = w[1]-(f(w[1]) * (w[1] - w[0]))/(f(w[1])-f(w[0]))
+            if error(errores)(w[0],w[1]) < tol:
                 #print("La raiz de su función es: ", p)
                 raiz = p
                 operador = False
-            x[0] = x[1]
-            x[1] = p
+            w[0] = w[1]
+            w[1] = p
         return raiz
     else:
         print("Valores erroneos")
 
-def raiz_secante1(x0, f, tol = 1e-4): 
+def raiz_secante1(x0, f, errores = 'E_ab', tol = 1e-4): 
     """
     -----------------------------------------------
     Metodo de la secante 1 para una o más raices
@@ -42,8 +48,13 @@ def raiz_secante1(x0, f, tol = 1e-4):
     
     Los parametros que cuenta:
     
-    intervalo: Recibe dos parametros, usualmete los extremos del intervalo [a,b] a analizar
+    x0: Recibe dos parametros, usualmete los extremos del intervalo [a,b] a analizar
     f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara
+
+    errores: Tipos de errores, E_ab (error absoluto), E_rel (error relativo), 
+    E_RPD (error diferencia de procentaje relativo), E_rel3
+    (error de diferencia y cambio relativo), E_dis (error de sitancia), E_rel2 (error relativo para convergencias cercanas a cero).
+    
     tol: la presicion a buscar, por defecto es en 1e-4
     
     ------------------------
@@ -56,7 +67,7 @@ def raiz_secante1(x0, f, tol = 1e-4):
         raiz_loop = localizador(f,w)
         raiz = []
         for i in raiz_loop:
-            p = secante(i,f,tol)
+            p = secante(i,f, errores, tol)
             raiz.append(p)
         return raiz
     else:

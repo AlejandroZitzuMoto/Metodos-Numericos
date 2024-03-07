@@ -7,9 +7,11 @@ setup(
     author = "José Alejandro Zitzumbo Montaño",
     author_email = "ja.zitzumbomontano@ugto.mx",
     url = "",
-    install_requires = [numpy], # añade cualquier paquete adicional que debe ser
+    install_requires = [], # añade cualquier paquete adicional que debe ser
                          # instalado una vez que se instale el paquete
     keywords = ['roots_python', 'primer paquete'],
-    packages = ['Raiz', 'Raiz.comandos', 'Raiz.Raices.biseccion', 'Raiz.Raices.punto_fijo', 'Raiz.Raices.Newton', 'Raiz.Raices.secante1', 'Raiz.Raices.secante2'],  # estructura
-    scripts = []
+    packages = setp.find_packages(),
+    #['Raiz', 'Raiz.comandos', 'Raiz.Raices.biseccion', 'Raiz.Raices.punto_fijo', 'Raiz.Raices.Newton', 'Raiz.Raices.secante1', 'Raiz.Raices.secante2'],  # estructura
+    scripts = [],
+    py_modules = ['paq_roots']
 )
