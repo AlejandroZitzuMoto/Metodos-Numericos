@@ -1,4 +1,4 @@
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 
 def punto_fijo(a, f1, df=None, errores = "E_rel2", Ni=150, tol=1e-4):  

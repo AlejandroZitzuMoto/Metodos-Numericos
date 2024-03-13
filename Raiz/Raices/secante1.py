@@ -1,5 +1,5 @@
 ## Metodo secante
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 ## Importar libreria de funciones
 def secante1(x,f, errores = 'E_ab', tol= 1e-4):

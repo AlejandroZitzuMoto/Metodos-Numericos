@@ -1,4 +1,4 @@
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 # Tambien para cuando nuestras funciones no tengan nada que ya esten pre definidas y que esten a prueba de errores 
 # Importar la nueba libreria que creemos

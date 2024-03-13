@@ -1,5 +1,5 @@
 ## Metodo de Newton
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
 
 # Importar las funciones
 
@@ -30,7 +30,7 @@ def Newton(x0,f,df, errores = 'E_dis',tol=1e-5):
     raiz = 0
     if df == 0:
         if es_flotante(x0) == True:
-            w float(x0)
+            w = float(x0)
             while operador:
                 p = w - (f(w)/df(w))
                 if error(errores)(w[0],w[1]) < tol:

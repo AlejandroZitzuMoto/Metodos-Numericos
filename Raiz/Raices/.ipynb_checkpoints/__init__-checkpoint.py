@@ -1,4 +1,4 @@
-from .Raices.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error, derivada
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error, derivada
 
 from .biseccion import biseccion, raiz_b
 from .Newton import Newton, raiz_N 

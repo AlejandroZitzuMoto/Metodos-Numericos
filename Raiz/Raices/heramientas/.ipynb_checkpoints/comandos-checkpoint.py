@@ -18,18 +18,17 @@ def es_flotante(variable):
     
     Parametros:
     float: una valor de tipo int o flotante
-
+    
     -----------------------------------
     Salida: Regresa un verdadero si cumple con un numero y un falso si es un caracter
     ----------------------------------
     """
-    
-	try:
-		float(variable)
-		return True
-	except:
-		return False
+    try:
+        float(variable)
+        return True
 
+    except:
+        return False
 
 #Meter intervalo
 
