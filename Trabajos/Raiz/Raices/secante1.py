@@ -30,7 +30,7 @@ def secante1(x,f, errores = 'E_ab', tol= 1e-4):
         w = [float(x[i]) for i in range (2)]
         while operador:
             p = w[1]-(f(w[1]) * (w[1] - w[0]))/(f(w[1])-f(w[0]))
-            if error(errores)(w[0],w[1]) < tol:
+            if abs(error(errores)(p,w[1])) < tol:
                 #print("La raiz de su función es: ", p)
                 raiz = p
                 operador = False

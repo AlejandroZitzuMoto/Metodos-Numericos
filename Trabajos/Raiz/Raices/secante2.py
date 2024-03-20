@@ -24,7 +24,7 @@ def secante2(x,funcion, errores = 'E_ab',tol = 1e-4):
     operador = True
     raiz = 0
     if es_flotante(x[0]) == True and es_flotante(x[1]) == True:    
-        w = [float(x[i]) for i in rage(2)]
+        w = [float(x[i]) for i in range(2)]
         while operador:
             p = w[1]-(funcion(w[1]) * (w[1] - w[0]))/(funcion(w[1])-funcion(w[0]))
             if error(errores)(w[0],w[1]) < tol:

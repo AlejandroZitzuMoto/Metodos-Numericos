@@ -28,7 +28,7 @@ def Newton(x0,f,df, errores = 'E_dis',tol=1e-5):
     
     operador = True
     raiz = 0
-    if df == 0:
+    if df <= tol:
         if es_flotante(x0) == True:
             w = float(x0)
             while operador:
@@ -66,7 +66,7 @@ def raiz_N(x0, f, df, errores = 'E_dis', tol = 1e-5):
     Salida: raices
     ------------------------
     """
-    if df == 0:
+    if df <= tol:
         if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
             w = [float(x0[i]) for i in range(2)]
     
