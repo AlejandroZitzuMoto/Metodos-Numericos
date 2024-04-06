@@ -1,5 +1,5 @@
 from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
-
+# Tengo que ver que verengas paso aquí
 
 def punto_fijo(a, f1, df=None, errores = "E_rel2", Ni=150, tol=1e-4):  
     """
@@ -76,7 +76,7 @@ def raiz_fija(x0, f,  g,df = None, errores = 'E_rel2', tol = 1e-5, Ni = 200):
     
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:   
         w = [float(x0[i]) for i in range(2)]
-        raiz_loop = localizador(g, w)
+        raiz_loop = localizador(g, w, tol)
         raiz = []
         for i in range(len(raiz_loop)):
                 print(f)

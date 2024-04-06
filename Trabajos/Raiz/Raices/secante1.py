@@ -28,15 +28,18 @@ def secante1(x,f, errores = 'E_ab', tol= 1e-4):
     raiz = 0
     if es_flotante(x[0]) == True and es_flotante(x[1]) == True:
         w = [float(x[i]) for i in range (2)]
-        while operador:
-            p = w[1]-(f(w[1]) * (w[1] - w[0]))/(f(w[1])-f(w[0]))
-            if abs(error(errores)(p,w[1])) < tol:
-                #print("La raiz de su función es: ", p)
-                raiz = p
-                operador = False
-            w[0] = w[1]
-            w[1] = p
-        return raiz
+        if sigma(f,w) == -1 or sigma(f,w) == 0:
+            while operador:
+                p = w[1]-(f(w[1]) * (w[1] - w[0]))/(f(w[1])-f(w[0]))
+                if abs(error(errores)(p,w[1])) < tol:
+                    #print("La raiz de su función es: ", p)
+                    raiz = p
+                    operador = False
+                w[0] = w[1]
+                w[1] = p
+            return raiz
+        else:
+            return None
     else:
         print("Valores erroneos")
 
@@ -64,12 +67,16 @@ def raiz_secante1(x0, f, errores = 'E_ab', tol = 1e-4):
     
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
         w = [float(x0[i]) for i in range(2)]
-        raiz_loop = localizador(f,w)
         raiz = []
-        for i in raiz_loop:
-            p = secante(i,f, errores, tol)
-            raiz.append(p)
-        return raiz
+        if sigma(f,w) == -1 or sigma(f,w) == 0:
+            raiz_loop = localizador(f,w, tol)
+            for i in raiz_loop:
+                p = secante1(i,f, errores, tol)
+                raiz.append(p)
+            return raiz
+        else:
+            raiz.append(None)
+            return raiz
     else:
         print("Valores erroneos")
         

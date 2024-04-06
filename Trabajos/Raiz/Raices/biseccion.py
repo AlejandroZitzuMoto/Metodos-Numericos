@@ -31,29 +31,22 @@ def biseccion(local, funcion, errores = "E_dis", tol = 1e-4,Ni = 200):
     ------------------------
     """
     
-    raiz = 0
     if es_flotante(local[0]) == True and es_flotante(local[1]) == True:
         w = [float(local[i]) for i in range(2)]
-        for i in range(len(w)):
-            if i < Ni:
-                p = suma(w[0], w[1])
-                if error(errores)(w[0],w[1]) <= tol or abs(funcion(p)) <= tol:
-                    print("La raiz de la funcion es: %.5f"% p)
+        for _ in range(Ni):
+            if sigma(funcion,w) == -1 or sigma(funcion,w) == 0: 
+                p = (w[0] + w[1])/2
+                if error(errores)(w[0],w[1]) <= tol or (abs(funcion(p)) <= tol or abs(funcion(p)) == 0):
                     raiz = p 
+                    return raiz
                     break
                 else:
                     if funcion(w[0])*funcion(p) > 0:
-                         w[0] = p
-                         
+                        w[0] = p 
                     else:
-                        w[1] = p
-                        
-                
-                Ni -= 1
+                        w[1] = p    
             else:
-                print("No se logro encontrar la raiz")
-                break
-        return raiz
+                return None
     else:
         print("Valores erroneos")
 
@@ -61,7 +54,7 @@ def biseccion(local, funcion, errores = "E_dis", tol = 1e-4,Ni = 200):
 Funcion biseccion como tal
 '''
 
-def raiz_b(x0, funcion, errores = "E_dis",Ni = 150, tol = 1e-4):
+def raiz_biseccion(x0, funcion, errores = "E_dis",Ni = 150, tol = 1e-4):
     """
     -----------------------------------------------
     Metodo de biseccion para una o más raices
@@ -86,12 +79,16 @@ def raiz_b(x0, funcion, errores = "E_dis",Ni = 150, tol = 1e-4):
     
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
         w = [float(x0[i]) for i in range(2)]
-        raiz_loop = localizador(funcion,w) 
         raiz_real = []
-        for i in raiz_loop:
-            p = biseccion(i, funcion, errores, tol, Ni)
-            raiz_real.append(p)
-        return raiz_real
+        if sigma(funcion,w) == -1 or sigma(funcion,w) == 0:
+            raiz_loop = localizador(funcion,w,tol) 
+            for i in raiz_loop:
+                p = biseccion(i, funcion, errores, tol, Ni)
+                raiz_real.append(p)
+            return raiz_real
+        else:
+            raiz_real.append(None)
+            return raiz_real
     else:
-        print("Valores incorrectos")
+        print("Valores incorrectos, Alitas de pollo")
 

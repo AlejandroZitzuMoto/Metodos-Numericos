@@ -1,9 +1,9 @@
 ## Metodo de Newton
-from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error
+from .heramientas.comandos import es_flotante, intr_int, sigma, localizador, suma, derivada, Dominio, error, D_central, ExRch
 
 # Importar las funciones
 
-def Newton(x0,f,df, errores = 'E_dis',tol=1e-5):
+def Newton(x0,f, errores = 'E_dis',tol=1e-5):
     """
     -----------------------------------------------
     Metodo de Newton para una raiz
@@ -13,7 +13,6 @@ def Newton(x0,f,df, errores = 'E_dis',tol=1e-5):
     
     x0: Recibe un parametros, cualquier punto [a,b] cercano a la raiz.
     f: La funcion lambda o el objeto def , estos refresentan la funcion que se analizara.
-    df: La derivada de la funcion, con lambda o def, refiriendoce a df(x)/dx.
     
     errores: Tipos de errores, E_ab (error absoluto), E_rel (error relativo), 
     E_RPD (error diferencia de procentaje relativo), E_rel3
@@ -25,26 +24,27 @@ def Newton(x0,f,df, errores = 'E_dis',tol=1e-5):
     Salida: raiz
     ------------------------
     """
-    
     operador = True
-    raiz = 0
-    if df <= tol:
-        if es_flotante(x0) == True:
-            w = float(x0)
-            while operador:
-                p = w - (f(w)/df(w))
-                if error(errores)(w[0],w[1]) < tol:
-                    #print("La raiz de su función es: ", p)
+    if es_flotante(x0) == True:
+        w = float(x0)
+        while operador:
+            df = ExRch(w,f,D_central)
+            if abs(df) != 0:
+                p = w-f(w)/df
+                if abs(w-p)/(1+abs(p)) < tol:
                     raiz = p
+                    return raiz
                     operador = False
-                w = p
-            return raiz
-        else:
-            print("Valores incorrectos.")
+                else:
+                    w = p
+            else:
+                print("Error, derivada = 0")
+                operador = False
     else:
-        print("La derivada es cero.")
+        print("Valores incorrectos.")
 
-def raiz_N(x0, f, df, errores = 'E_dis', tol = 1e-5):
+
+def raiz_newton(x0, f, errores = 'E_dis', tol = 1e-5):
     """
     -----------------------------------------------
     Metodo del punto fijo para una o más raices
@@ -66,18 +66,19 @@ def raiz_N(x0, f, df, errores = 'E_dis', tol = 1e-5):
     Salida: raices
     ------------------------
     """
-    if df <= tol:
-        if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
-            w = [float(x0[i]) for i in range(2)]
-    
-            raiz_loop = Dominio(w,f)
-            raiz = []
+    if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
+        w = [float(x0[i]) for i in range(2)]
+        raiz_loop = Dominio(w,f,tol)
+        raiz = []
+        if sigma(f,w) == -1 or sigma(f,w) == 0:
             for i in raiz_loop:
-                p = Newton(i,f,df, errores, tol)
+                p = Newton(i,f, errores, tol)
                 raiz.append(p)
             return raiz
         else:
-            print("Valores incorrectos.")
+            raiz.append(None)
+            return raiz
     else:
-        print("La derivada es cero.")
-        
+        print("Valores incorrectos.")
+    
+    

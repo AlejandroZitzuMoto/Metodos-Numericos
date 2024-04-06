@@ -2,6 +2,33 @@ import numpy as np
 
 #Verifica si es un int o flotante
 
+def D_central(f,x,h):
+    """
+    ----------------------
+    Entrada
+    ----------------------
+    x: Punto evaluado
+    h: ditancia entre cada corte
+    f: Funcion
+    """
+    df = (f(x+h/2) - f(x-h/2))/h
+    return df
+    
+def ExRch(x,f,g,h =1e-6 ,p = 2):
+    """
+    --------------------------
+    Entrada
+    --------------------------
+    x: Punto evaluado
+    h: ditancia entre cada corte
+    p: Orden del error
+    f: Funcion
+    g: Derivada
+    
+    """
+    G = (2**p *g(f,x,h/2) - g(f,x,h))/(2**p -1)
+    return G
+
 def derivada(df, a):
     if df is None:
         return True
@@ -54,7 +81,7 @@ def intr_int():
 
 #Esta funcion se encarga de ver que el producto de las dos funciones se menor que cero
 
-def sigma(funcion, x):
+def sigma(funcion, x, tol = 1e-4):
     """
     --------------------------------------
     Retrorno de sigo evaluado en funcion
@@ -71,12 +98,18 @@ def sigma(funcion, x):
 
     a, b = x[0], x[1]
     sigm = 1 if funcion(a)*funcion(b) > 0 else -1
+    if funcion(a)*funcion(b) > 0:
+        sigm = 1
+    elif (funcion(a)*funcion(b) == 0 ) or funcion(a)*funcion(b) <= tol:
+        sigm = 0
+    else: 
+        sigm = -1
     return sigm
 
 #Esta se encarga de guardar los intervalos donde exista una posible raiz
 
 
-def localizador(funcion, x0, Nint = 100):
+def localizador(f,x0,tol = 1e-4, Ni = 100):
     """
     ----------------------------------------------------
     Busca las posibles raices en una funcion
@@ -91,25 +124,22 @@ def localizador(funcion, x0, Nint = 100):
     ----------------------------------------------------------------------------------------------------
     
     """
-    interval = np.linspace(x0[0],x0[1], Nint)
+    x1 = (x0[1]-x0[0])/Ni
+    x2 = []
+    x3 = x0[0] + x1
+    x4 = x3
+    x2.append(x3)
+    for i in range(Ni):
+        x4 = x4 + x1
+        x2.append(x4)
     localiz = []
-    for i in range(1, Nint):
-        comparar = [interval[i-1], interval[i]]
-        if sigma(funcion, comparar) < 0:
+    for i in range(1, Ni):
+        comparar = [x2[i-1],x2[i]]
+        if sigma(f, comparar, tol) < 0 or sigma(f, comparar, tol) == 0:
             localiz.append(comparar)
     return localiz
 
 
-#Para elegir el error
-'''
-def error(num):
-    T_error =  {
-                    "1": lambda x,x1: abs(x - x1), #absolito
-                    "2": lambda x,x1: abs((x-x1)/x1), #Relativo 
-                    "3": lambda pn1, pn: abs(x-x1)/abs(max([x, x1])) #Cambio relativo
-                }
-    return T_error(num)
-'''
 
 #Suma
 
@@ -139,7 +169,7 @@ def derivada(df,a):
         return False
 
 #Hace lo mismo que localizador pero solo da un valor donde puede estar la raiz
-def Dominio(x, funcion, Nint = 100):
+def Dominio(x0,f,tol = 1e-4,Ni = 100):
     """"
     ------------------------------------------------------
     Busca las posibles raices en una funcion
@@ -155,14 +185,20 @@ def Dominio(x, funcion, Nint = 100):
     ----------------------------------------------------------------------------------------------
     
     """
-    
-    lim = np.linspace(x[0],x[1], Nint)
-    posible = []
-    for i in range(len(lim)):
-        comparar = [lim[i-1], lim[i]]
-        if sigma(funcion, comparar) < 0:
-            posible.append(lim[i])
-    return posible
+    x1 = (x0[1]-x0[0])/Ni
+    x2 = []
+    x3 = x0[0] + x1
+    x4 = x3
+    x2.append(x3)
+    for i in range(Ni):
+        x4 = x4 + x1
+        x2.append(x4)
+    localiz = []
+    for i in range(1, Ni):
+        comparar = [x2[i-1],x2[i]]
+        if sigma(f, comparar, tol) < 0 or sigma(f, comparar, tol) == 0:
+            localiz.append(comparar[0])
+    return localiz
 
 def error(er):    
     """
@@ -185,7 +221,7 @@ def error(er):
                 "E_rel2": lambda x,x0: abs(x-x0)/(1+abs(x0)),
                 "E_RPD": lambda x, x0: 2*((x-x0)/abs(x)+abs(x0)),
                 "E_rel3": lambda x, x0: abs(x-x0)/abs(max([x,x0])),
-                "E_dis": lambda x, x0: abs((x - x0/2))
+                "E_dis": lambda x, x0: abs((x - x0)/2)
              }
     return errores[er]
 
