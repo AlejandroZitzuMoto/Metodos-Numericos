@@ -30,8 +30,8 @@ def Euler_izq(f,xv, yo, mu = 1e-4,nptos = 10,k = False):
     nptos: cantidad de puntos a evaluar
     k: para elegir entre dos formas
     '''
-    h = (xv[1]-xv[0])/nptos
-    x1 = np.arange(nptos)*h
+    h = (xv[1]-xv[0])/(nptos-1)
+    x1 = xv[0] + np.arange(nptos)*h
     if k == True:
         yv = []
         yv.append(yo)
@@ -61,8 +61,8 @@ def trapecio(f,xv,y0,nptos = 6):
     y0: Condición de frontera
     nptos: cantidad de puntos a evaluar
     '''
-    h = (xv[1]-xv[0])/nptos
-    x1 = np.arange(nptos)*h
+    h = (xv[1]-xv[0])/(nptos-1)
+    x1 = xv[0] + np.arange(nptos)*h
     yv = np.zeros(len(x1))
     for i,x in enumerate(x1):
         yv[i] = y0
@@ -80,8 +80,8 @@ def trapecio_disc(f,xv,y0,nptos = 6):
     y0: Condicion de frontera
     nptos: cantidad de puntos a evaluar
     '''
-    h = (xv[1]-xv[0])/nptos
-    x1 = np.arange(nptos)*h
+    h = (xv[1]-xv[0])/(nptos-1)
+    x1 = xv[0] + np.arange(nptos)*h
     yv = np.zeros(nptos)
     f2 = lambda x,y,z: z - yv[i] - h*f(x + 0.5*h, (yv[i]+z)/2)
     for i,x in enumerate(x1):
@@ -101,7 +101,7 @@ def Runge_kutta(f,xv,y0,nptos = 6):
     nptos: cantidad de puntos a evaluar
     '''
     h = (xv[1]-xv[0])/(nptos-1)
-    x1 = np.arange(nptos)
+    x1 = xv[0] + np.arange(nptos)*h
     yv = np.zeros(nptos)
     for i,x in enumerate(x1):
         yv[i] = y0
