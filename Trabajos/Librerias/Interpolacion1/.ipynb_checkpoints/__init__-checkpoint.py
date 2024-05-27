@@ -1,0 +1,3 @@
+from .Interpolacion import lagrenge, poli_cardinal, dif_div, n_Newton, polinomial_Newton, si, Fracc_Intervalo, Interpolacion_lineal, Intervalos_partes, generatedata, Constantes, Interpo_trigo, Inter_Cubica_Class2, Matriz, Pi, Di, Interpol_Cubica_Class1, Split_Cuadratico
+
+__all__ = ['lagrenge', 'poli_cardinal', 'dif_div', 'n_Newton', 'polinomial_Newton', 'si', 'Fracc_Intervalo', 'Interpolacion_lineal', 'Intervalos_partes', 'generatedata', 'Constantes','Interpo_trigo', 'Inter_Cubica_Class2','Matriz', 'Pi', 'Di', 'Interpol_Cubica_Class1', 'Split_Cuadratico']
