@@ -10,7 +10,8 @@ def Pi(xv,yv):
     p = (yv[1]-yv[0])/(xv[1]-xv[0])
     return p
     
-def Di(xv,yv, op = False):
+def Di(xv,yv, op = True):
+    
     """
     Derivada
     -------------
@@ -145,9 +146,10 @@ def Inter_Cubica_Class2(xv,yv,x):
     n = len(xv)
     d = Matriz(xv,yv)
     if xv[0] < x and  xv[1] > x:
-        h = (xv[-1]-xv[0])/(n-1)
-        p1 = (d[1] + d[0] - 2*d[0])/h**2 
-        s = yv[0] + d[0] * (x - xv[0]) + ((Pi([xv[0],xv[1]],[yv[0],yv[1]]) - d[0])/h) *(x-xv[0])+  p1*(x - xv[0])**2 * (x-xv[1])
+        h = (xv[1]-xv[0])
+        pi = Pi([xv[0],xv[1]],[yv[0],yv[1]])
+        p1 = (d[1] + d[0] - 2*pi)/h**2 
+        s = yv[0] + d[0] * (x - xv[0]) + ((pi - d[0])/h) *(x-xv[0])**2 +  p1*(x - xv[0])**2 * (x-xv[1])
         return s
         
     if n > 3:
@@ -219,6 +221,7 @@ def poli_cardinal(xv, yv, npto=100):
             p = p + yv[k]*lagrenge(x[j],xv,k)
         px.append(p)
     return x, px
+    
 def dif_div(xv, yv):
     '''
     Obtiene las constantes para el motodo de Newton
@@ -240,28 +243,50 @@ def dif_div(xv, yv):
             
     return coef
 
+def pesos(dataxs):
+    '''
+    Encuentra los pesos para Interpolación baricentrica
+    -----------------------------------------------------
+    dataxs: Puntos de la base.
+    ------------------
+    Salida: Pesos
+    '''
+    n = len(dataxs)
+    ws = np.ones(n)
+    for k in range(n):
+        for j in range(n):
+            if j == k:
+                continue
+            ws[k] *= (dataxs[k]-dataxs[j])
+    return 1/ws
 
-def n_Newton(n,x, xv):
+def bary(dataxs, datays, x):
     '''
-    Creea los polinomios
-    ---------------------
-    xv: Puntos en x
-    x: Evalua x en
-    n: La cantidad de puntos
+    Interpolación Baricentrica
+    -------------------------------
+    dataxs: Puntos en x
+    datay puntos en y
+    x: Punto a evaluar
+    ------------------
+    Devuelve f(x) -> y
     '''
-    if n == 0:
-        return 1
+    ws = pesos(dataxs)
+    k = np.where(x == dataxs)[0]
+    if len(k) == 0:
+        nume = np.sum(ws*datays/(x-dataxs))
+        denom = np.sum(ws/(x-dataxs))
+        val = nume/denom
     else:
-        N = 1
-        for i in range(0,n):
-            N = N * (x - xv[i])
-    return N
+        val = datays[k[0]]
+    return val
 
-def polinomial_Newton(coef,xv,x):
+
+def polinomial_Newton(xv, yv, x):
     '''
     evaluar el polinomio de newton
     ------------------------------
     '''
+    coef = dif_div(xv, yv)[0, :]
     n = len(xv) - 1 
     p = coef[n]
     for k in range(1,n+1):
@@ -279,17 +304,8 @@ def si(xv,yv,x):
     y = yv[0] + (yv[1]-yv[0])*(x-xv[0])/(xv[1]-xv[0])
     return y
 
-def Fracc_Intervalo(xv,nptos = 50):
-    '''
-    Lo que hace es que agarra dos puntos de los datos y crea una lista con valores en medio
-    y los almacena en otra lista.
-    ---------------------------------------------------------------------------------------
-    xv: dos puntos de los datos obtenidos
-    '''
-    sub_i = np.linspace(xv[0],xv[1],nptos)
-    return sub_i
 
-def Interpolacion_lineal(xv,yv,nptos = 50):
+def Interpolacion_lineal(xv,yv,x):
     '''
     Crea una interpolacion lineal, simulando la forma de la posiblefuncion, con rectas.
     -----------------------------------------------------------------------------------
@@ -302,42 +318,12 @@ def Interpolacion_lineal(xv,yv,nptos = 50):
     n = len(xv)
     # Primero creamos un ciclo que se encarge de crear las funciones.
     #Para crear los subintervalos igual al numero de funciones (n-1) --> Funciones
-    x2 = []
-    Polinomio = []
     for i in range(n-1):
-        Is = Fracc_Intervalo([xv[i],xv[i+1]],nptos)
-        Is1 = Is.tolist()
-        for punto in Is:
-            if punto in xv:
-                if punto in [xv[0],xv[-1]]:
-                    continue
-                Is1.remove(punto)
-        for j in range(len(Is1)):
-            # print('j',j)
-            y = si([xv[i],xv[i+1]],[yv[i],yv[i+1]],Is1[j])
-            Polinomio.append(y)
-        x2.extend(Is1)
-    return x2 , Polinomio
+        if xv[i] < x and xv[i+1] > x:
+            y = si([xv[i],xv[i+1]],[yv[i],yv[i+1]],x)
+            return  y
 
-def Intervalos_partes(xv,nptos = 50):
-    '''
-    Crea una lista con sublistas (Dependiendo de cuantos datos tengamos nos generara n-1 listas),
-    las cuales genera puntos (nptos) entre cada punto (xv).
-    Y se encarga de eliminar los puntos (xv).
-    ----------------------------------------------
-    xv: puntos (x)
-    yv: Puntos (y)
-    nptos: La cantidad de datos que se generaran en las sublistas.
-    '''
-    n = len(xv)
-    for i in range(n-1):
-        Is = Fracc_Intervalo([xv[i],xv[i+1]],nptos)
-        Is1 = Is.tolist()
-        for punto in Is:
-            if punto in xv:
-                if punto in [xv[0],xv[-1]]:
-                    continue
-                Is1.remove(punto)
+
 
 def Constantes(xv,yv):
     '''
@@ -383,3 +369,32 @@ def Interpo_trigo(xv,yv, nptos = 50):
             F = F + ak[j]*np.cos(j*i) + bk[j-1]*np.sin(j*i)           
         Polinomio.append(F)
     return X, Polinomio
+    
+def Gnormalfit(dataxs, datays, datasigs, fb,n = 1):
+    '''
+    Fitin con diferentes bases lineales
+    ---------------------------------------
+    dataxs: Puntos en x
+    datays: Puntos en y
+    datasigs: Chi
+    fb: Base de la función
+    n: Depende de la base
+    --------------------------
+    Salida: Regresion polinominal.
+    '''
+    N = dataxs.size
+    A = np.zeros((N, n))  # notar la dimensión
+    
+    for k in range(n):
+        A[:, k] = fb(n,k, dataxs)/datasigs  # A_{jk} = phi_k(x_j)/sigma_j
+    bs = datays/datasigs  # b_j = y_j/sigma_j
+    
+    matI = A.T@A  # np.dot(A.T, A)
+    InvmatI = np.linalg.inv(matI) 
+    matD = A.T@bs
+    cs = InvmatI@matD
+    
+    sigS = np.diagonal(InvmatI)
+    chisq = np.sum((bs - A@cs)**2)  # (bs - A@cs).T@(bs - A@cs)
+    
+    return cs, chisq, sigS

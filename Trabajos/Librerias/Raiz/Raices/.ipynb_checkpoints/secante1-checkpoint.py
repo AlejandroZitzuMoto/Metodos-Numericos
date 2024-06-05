@@ -68,15 +68,12 @@ def raiz_secante1(x0, f, errores = 'E_ab', tol = 1e-4):
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
         w = [float(x0[i]) for i in range(2)]
         raiz = []
-        if sigma(f,w) == -1 or sigma(f,w) == 0:
-            raiz_loop = localizador(f,w, tol)
-            for i in raiz_loop:
-                p = secante1(i,f, errores, tol)
-                raiz.append(p)
-            return raiz
-        else:
-            raiz.append(None)
-            return raiz
+        raiz_loop = localizador(f,w, tol)
+        for i in raiz_loop:
+            p = secante1(i,f, errores, tol)
+            raiz.append(p)
+        return raiz
+        
     else:
         print("Valores erroneos")
         

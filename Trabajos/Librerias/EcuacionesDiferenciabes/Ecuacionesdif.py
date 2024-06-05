@@ -112,34 +112,77 @@ def Runge_kutta(f,xv,y0,nptos = 6):
         y0 = y0 + (1/6)*(k0 + 2*k1 + 2*k2 + k3)
     return yv
 
-def RK4Fyp(f,x,y0,nptos = 50):
+def rk4vectorial(f,x,y0, nptos= 50):
     '''
-    Funcion para yprima
-    -------------------
-    f: función F(x,y1(a),y2(a),...)
-    x: valor de x
+    rk4 vectorial
+    ---------------------
+    f: función vectorial
+    x: intervalo
     y0: Vector de condiciones de frontera
+    nptos: numero de puntos
     '''
     n = len(y0)
-    yp = np.zeros((nptos,n))
+    yf = np.zeros([nptos,n])
     h = (x[-1]-x[0])/(nptos-1)
     xv = x[0] + np.arange(nptos)*h
-    for i, xi in enumerate(xv):
-        yp[i, : ] = y0
-        k0 = h*f(xi, y0)  
-        k1 = h*f(xi+h/2, y0 + k0/2)
-        k2 = h*f(xi+h/2, y0 + k1/2)
-        k3 = h*f(xi+h, y0 + k2)
+    for i,xi in enumerate(xv):
+        yf[i,:] = y0
+        k0 = h*f(xi,y0)
+        k1 = h*f(xi + 0.5*h, y0 + 0.5*k0)
+        k2 = h*f(xi + 0.5*h, y0 + 0.5*k1)
+        k3 = h*f(xi + h, y0 + k2)
         y0 = y0 + (k0 + 2*k1 + 2*k2 + k3)/6
-    return xv, yp
+    return xv, yf
 
-def rk4f2orden(f,x,y0,arg = None,nptos = 50):
+def rk4vect_arg(f,x,y0,arg = None, nptos = 50):
+    '''
+    Funcion rk4vectorial
+    -----------------------
+    f: función vectorial
+    x: intervalo 
+    y0: Vector de condiciones de frontera
+    arg: contantes de la función
+    nptos: Cantidad de puntos
+    '''
     if arg:
-        f1 = lambda x, yf: np.array(f(x,yf, arg))
+        f1 = lambda x, yv: np.array(f(x,yv, *arg))
     else:
-        f1 = lambda x, yf: np.array(f(x,yf))
-    xv , yv = RK4Fyp(f1,x,y0,nptos = 50)
-    return xv,yv
+        f1 = lambda x, yv: np.array(f(x, yv))
+    xv, yv = rk4vectorial(f1,x,y0)
+    
+    return xv, yv
+
+def shoot(f,x,yf,s,y0,arg = None, nptos = 50):
+    '''
+    Metodo para encontrar las condiciones de frontera en el ultimo punto
+    ---------------------------------------------------------------------
+    f: Funcion vector
+    x: intervalo
+    yf: valor final de frontera
+    y0: vector de condiciones de frintera donde se integra la derivada
+    arg: constantes de la función
+    nptos: numero de puntos
+    '''
+    s,y0 = y0v
+    _, yv = rk4vect_arg(f,x,y0v,arg = arg, nptos = nptos)
+    return yv[-1,0]-yf
+
+def shooting(f,x,y0,yf,arg,nptos = 50, inter = [-1e12,1e12]):
+    '''
+    la condición de fronera final y(b)
+    -------------------------
+    f: Función
+    x: Intervalo
+    y0: condicion de frontera
+    yf: Valor final
+    arg: contantes de la función
+    nptos: Numero de puntos:
+    inter: intervalo para encontrar vaolor de la derivada
+    '''
+    s ,y0v = y0
+    f2 = lambda s: shoot(f,x,yf,s,y0,arg,nptos)
+    ydrv = rr.raiz_secante1(inter,f2)
+    return ydrv
 
 def matriz(data, info=False):
     '''
@@ -176,36 +219,6 @@ def matriz(data, info=False):
         print(A)
 
     return A, bs, xi
-
-def shoot(f,x,yf,s,y0,arg = None, nptos = 50):
-    '''
-    Metodo para encontrar las condiciones de frontera en el ultimo punto
-    ---------------------------------------------------------------------
-    f: Funcion vector
-    x: intervalo
-    yf: valor final de frontera
-    y0: vector de condiciones de frintera donde se integra la derivada
-    arg: constantes de la función
-    nptos: numero de puntos
-    '''
-    s,y0 = y0v
-    _, yv = rk4f2orden(f,x,y0v,arg = arg, nptos = nptos)
-    return yv[-1,0]-yf
-
-def shooting(f,x,y0,yf,arg,nptos = 50, inter = [-1e12,1e12]):
-    '''
-    f: Función
-    x: Intervalo
-    y0: condicion de frontera
-    yf: Valor final
-    arg: contantes de la función
-    nptos: Numero de puntos:
-    inter: intervalo para encontrar vaolor de la derivada
-    '''
-    s ,y0v = y0
-    f2 = lambda s: shoot(f,x,yf,s,y0,arg,nptos)
-    ydrv = rr.raiz_secante1(inter,f2)
-    return ydrv
     
 def matriz2(data, info=False, q=1.5):
     a, b, npt = data

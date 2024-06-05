@@ -70,14 +70,11 @@ def raiz_newton(x0, f, errores = 'E_dis', tol = 1e-5):
         w = [float(x0[i]) for i in range(2)]
         raiz_loop = Dominio(w,f,tol)
         raiz = []
-        if sigma(f,w) == -1 or sigma(f,w) == 0:
-            for i in raiz_loop:
-                p = Newton(i,f, errores, tol)
-                raiz.append(p)
-            return raiz
-        else:
-            raiz.append(None)
-            return raiz
+        for i in raiz_loop:
+            p = Newton(i,f, errores, tol)
+            raiz.append(p)
+        return raiz
+        
     else:
         print("Valores incorrectos.")
     

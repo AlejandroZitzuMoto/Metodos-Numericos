@@ -80,15 +80,12 @@ def raiz_biseccion(x0, funcion, errores = "E_dis",Ni = 150, tol = 1e-4):
     if es_flotante(x0[0]) == True and es_flotante(x0[1]) == True:
         w = [float(x0[i]) for i in range(2)]
         raiz_real = []
-        if sigma(funcion,w) == -1 or sigma(funcion,w) == 0:
-            raiz_loop = localizador(funcion,w,tol) 
-            for i in raiz_loop:
-                p = biseccion(i, funcion, errores, tol, Ni)
-                raiz_real.append(p)
-            return raiz_real
-        else:
-            raiz_real.append(None)
-            return raiz_real
+        raiz_loop = localizador(funcion,w,tol) 
+        for i in raiz_loop:
+            p = biseccion(i, funcion, errores, tol, Ni)
+            raiz_real.append(p)
+        return raiz_real
+    
     else:
         print("Valores incorrectos, Alitas de pollo")
 
